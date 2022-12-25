@@ -1,8 +1,6 @@
 import cv2
 import mediapipe as mp
-import time
 from google.protobuf.json_format import MessageToDict
-import json
 
 
 def Hand(max_hands=2,

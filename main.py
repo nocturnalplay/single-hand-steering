@@ -5,15 +5,29 @@ import json
 import sys
 from websockets import serve
 import asyncio
+import argparse
+import subprocess
 
 # ----------------------------------------------------------------
 # car gesture arch
 # ----------------------------------------------------------------
+# Initialize parser
+parser = argparse.ArgumentParser(prog='Gesture control for electronics',
+                                 description='This application is for to access any electronics through the hand gesture',
+                                 epilog='Happy Hacking!!!')
 
+parser.add_argument("-i", "--address", help="Enter the host ip address")
+parser.add_argument("-p", "--port", help="Enter the host port number")
+
+
+args = parser.parse_args()
 # find the actual percentage for the inbetween values
 
-host = sys.argv[1]
-port = sys.argv[2]
+if not args.address or not args.port:
+    sys.exit(1)
+
+host = args.address
+port = args.port
 
 
 def findPercents(inp, mi, ma, v):
@@ -109,8 +123,57 @@ async def Handler(websocket):
 
 
 async def main():
-    print("server created on 9000 port")
+    print(f"server created on {port} port")
     async with serve(Handler, host, port, ping_interval=None):
         await asyncio.Future()  # run forever
 
 asyncio.run(main())
+
+
+# two hand gesture control e the car
+'''
+            if right:
+                # circle shape x and y axis point
+                cv2.circle(img, (right[4][0], right[4][1]),
+                           8, (0, 255, 0), cv2.FILLED)
+                cv2.circle(img, (right[8][0], right[8][1]),
+                           8, (0, 255, 0), cv2.FILLED)
+                # data for the car
+                enddata["acspeed"] = findPercents(math.hypot(
+                    right[4][0]-right[8][0], right[4][1]-right[8][1]), 20, 100, 0)
+                if enddata["acspeed"] > 0:
+                    if right[12][1] < right[11][1]:
+                        enddata["acdirection"] = "backward"
+                        # lines for the eache shape in rgb
+                        cv2.line(img, (right[4][0], right[4][1]),
+                                 (right[8][0], right[8][1]), (0, 0, 0), 2)
+                    else:
+                        enddata["acdirection"] = "forward"
+                        # lines for the eache shape in rgb
+                        cv2.line(img, (right[4][0], right[4][1]),
+                                 (right[8][0], right[8][1]), (255, 255, 255), 2)
+                else:
+                    enddata["acdirection"] = "neutral"
+            if left:
+                # circle shape x and y axis point
+                cv2.circle(img, (left[4][0], left[4][1]),
+                           8, (0, 255, 0), cv2.FILLED)
+                cv2.circle(img, (left[8][0], left[8][1]),
+                           8, (0, 255, 0), cv2.FILLED)
+                # data for the car
+                enddata["rospeed"] = findPercents(math.hypot(
+                    left[4][0]-left[8][0], left[4][1]-left[8][1]), 30, 100, 0)
+                if enddata["rospeed"] > 0:
+                    if left[4][0] < left[8][0]:
+                        enddata["rodirection"] = "left"
+                        # lines for the eache shape in rgb
+                        cv2.line(img, (left[4][0], left[4][1]),
+                                 (left[8][0], left[8][1]), (0, 0, 0), 2)
+                    elif left[4][0] > left[8][0]:
+                        enddata["rodirection"] = "right"
+                        # lines for the eache shape in rgb
+                        cv2.line(img, (left[4][0], left[4][1]),
+                                 (left[8][0], left[8][1]), (255, 255, 255), 2)
+                else:
+                    enddata["rodirection"] = "neutral"
+'''
