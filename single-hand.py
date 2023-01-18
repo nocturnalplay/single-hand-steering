@@ -31,7 +31,7 @@ Hcam = 480
 cam.set(3, Wcam)
 cam.set(4, Hcam)
 
-hands = hand.Hand(max_hands=2)
+hands = hand.Hand(max_hands=1)
 
 
 try:
